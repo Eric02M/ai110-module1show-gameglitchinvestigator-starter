@@ -35,6 +35,7 @@ def check_guess(guess, secret):
 
     try:
         if guess > secret:
+            #FIXME: LOGIC BReaks here by giving false hints
             return "Too High", "📈 Go HIGHER!"
         else:
             return "Too Low", "📉 Go LOWER!"
