@@ -35,16 +35,18 @@ def check_guess(guess, secret):
 
     try:
         if guess > secret:
-            return "Too High", "📉 Go LOWER!"  # FIXME: Logic breaks here if hint is wrong
+            #FIXME: LOGIC BReaks here by giving false hints
+            return "Too High", "📈 Go LOWER!"
         else:
-            return "Too Low", "📈 Go HIGHER!"  # FIXME: Logic breaks here if hint is wrong
+            ##FIXME: LOGIC BReaks here by giving false hint go higher
+            return "Too Low", "📉 Go HIGHER!"
     except TypeError:
         g = str(guess)
         if g == secret:
             return "Win", "🎉 Correct!"
         if g > secret:
-            return "Too High", "📈 Go lower!"
-        return "Too Low", "📉 Go higher!"
+            return "Too High", "📈 Go LOWER!"
+        return "Too Low", "📉 Go HIGHER!"
 
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
@@ -92,8 +94,10 @@ st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
 
+#fixme: secret should reset when difficulty changes, 
+# but it doesn't right now 0 instead of 1
 if "attempts" not in st.session_state:
-    st.session_state.attempts = 0  # FIXME: Logic breaks here if not zero (off-by-one)
+    st.session_state.attempts = 0 #fixme: off-by-one error, should start at 0 so user gets all allowed attempts
 
 if "score" not in st.session_state:
     st.session_state.score = 0
@@ -101,7 +105,7 @@ if "score" not in st.session_state:
 if "status" not in st.session_state:
     st.session_state.status = "playing"
 
-if "history" not in st.session_state:
+    st.session_state.attempts = 0  # FIXME: Off-by-one error! Should be 0 so user gets all allowed attempts.
     st.session_state.history = []
 
 st.subheader("Make a guess")
@@ -133,7 +137,7 @@ with col3:
 
 if new_game:
     st.session_state.attempts = 0
-    st.session_state.secret = random.randint(low, high)  # FIXME: Logic breaks here if not using correct range
+    st.session_state.secret = random.randint(low, high) #fixme should use (low, high)
     st.success("New game started.")
     st.rerun()
 
@@ -155,7 +159,10 @@ if submit:
     else:
         st.session_state.history.append(guess_int)
 
-        secret = st.session_state.secret  # FIXME: Logic breaks here if type is switched
+        #if st.session_state.attempts % 2 == 0:
+          #  secret = str(st.session_state.secret)
+        #else:
+        secret = st.session_state.secret #fixme: retains the range of the bounds
 
         outcome, message = check_guess(guess_int, secret)
 
