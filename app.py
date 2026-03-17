@@ -29,24 +29,6 @@ def parse_guess(raw: str):
     return True, value, None
 
 
-def check_guess(guess, secret):
-    if guess == secret:
-        return "Win", "🎉 Correct!"
-
-    try:
-        if guess > secret:
-            return "Too High", "📉 Go LOWER!"  # FIXME: Logic breaks here if hint is wrong
-        else:
-            return "Too Low", "📈 Go HIGHER!"  # FIXME: Logic breaks here if hint is wrong
-    except TypeError:
-        g = str(guess)
-        if g == secret:
-            return "Win", "🎉 Correct!"
-        if g > secret:
-            return "Too High", "📈 Go lower!"
-        return "Too Low", "📉 Go higher!"
-
-
 def update_score(current_score: int, outcome: str, attempt_number: int):
     if outcome == "Win":
         points = 100 - 10 * (attempt_number + 1)
@@ -84,6 +66,15 @@ attempt_limit_map = {
 }
 attempt_limit = attempt_limit_map[difficulty]
 
+#FIXME - added this chunk to ensure the game's level secret remained within the 
+ 
+if st.session_state.get("difficulty") != difficulty:
+    st.session_state.difficulty = difficulty
+    st.session_state.secret = random.randint(*get_range_for_difficulty(difficulty))
+    st.session_state.attempts = 0
+    st.session_state.status = "playing"
+    st.session_state.history = []
+
 low, high = get_range_for_difficulty(difficulty)
 
 st.sidebar.caption(f"Range: {low} to {high}")
@@ -107,7 +98,9 @@ if "history" not in st.session_state:
 st.subheader("Make a guess")
 
 st.info(
-    f"Guess a number between 1 and 100. "
+    #fixme i used {} and variables low and high instead of hardcoding range
+    #to ensure the message displayed matches thedifficulty'srange 
+    f"Guess a number between {low} and {high}. "
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
 )
 
