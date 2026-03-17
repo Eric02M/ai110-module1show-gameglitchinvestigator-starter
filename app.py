@@ -1,5 +1,7 @@
 import random
 import streamlit as st
+from logic_utils import check_guess
+
 
 def get_range_for_difficulty(difficulty: str):
     if difficulty == "Easy":
@@ -66,7 +68,8 @@ attempt_limit_map = {
 }
 attempt_limit = attempt_limit_map[difficulty]
 
-#FIXME - added this chunk to ensure the game's level secret remained within the 
+#FIXME - added this chunk to ensure the game's level secret remained
+#  within the difficlty's range using claude suggestion.
  
 if st.session_state.get("difficulty") != difficulty:
     st.session_state.difficulty = difficulty
@@ -100,6 +103,7 @@ st.subheader("Make a guess")
 st.info(
     #fixme i used {} and variables low and high instead of hardcoding range
     #to ensure the message displayed matches thedifficulty'srange 
+    # AI showed where the code neding correction is I knew how to correct it
     f"Guess a number between {low} and {high}. "
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
 )
@@ -126,7 +130,8 @@ with col3:
 
 if new_game:
     st.session_state.attempts = 0
-    st.session_state.secret = random.randint(low, high)  # FIXME: Logic breaks here if not using correct range
+    st.session_state.secret = random.randint(low, high)  # FIXME: 
+    #Logic breaks here; not using correct range collaborated with claude
     st.success("New game started.")
     st.rerun()
 
